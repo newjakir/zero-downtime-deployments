@@ -1,0 +1,13 @@
+# Service (manually switch between env=blue or env=green)
+apiVersion: v1
+kind: Service
+metadata:
+  name: m10app-bluegreen-service
+spec:
+  selector:
+    app: m10p-bluegreen
+    env: blue  # <-- switch to 'green' when ready
+  ports:
+    - port: 80
+      targetPort: 3000
+

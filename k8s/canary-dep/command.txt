@@ -1,0 +1,29 @@
+#delete namespace & all resources inside it
+kubectl delete namespace jakir007
+
+#Create namespace
+kubectl create namespace jakir007
+
+#Deploy backend
+kubectl apply -f backend-deployment.yaml -n jakir007
+
+#Create backend service
+kubectl apply -f backend-service.yaml -n jakir007
+
+#Install cert-manager if not done already
+helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.17.2 --set crds.enabled=true
+
+#Register Certificate Issuer
+kubectl apply -f cert-issuer.yaml -n jakir007
+
+#Configure ngnix ingress
+kubectl apply -f ngnix-ingress.yaml -n jakir007
+
+###check ingress
+kubectl get ingress -n jakir007
+
+#Check pods
+kubectl get pods -n jakir007
+
+#Get all resources
+kubectl get all -n jakir007

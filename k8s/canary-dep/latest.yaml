@@ -1,0 +1,59 @@
+# Latest deployment (v2)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: m10p-canary-latest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: m10p-canary
+      version: latest
+  template:
+    metadata:
+      labels:
+        app: m10p-canary
+        version: latest
+    spec:
+      containers:
+      - name: m10p-canary
+        image: newjakir/m10p-bluegreen-app:v2.0
+        ports:
+        - containerPort: 3000
+
+---
+# Service for latest
+apiVersion: v1
+kind: Service
+metadata:
+  name: m10p-canary-service-latest
+spec:
+  selector:
+    app: m10p-canary
+    version: latest
+  ports:
+    - port: 80
+      targetPort: 3000
+
+---
+# Ingress for latest (10%)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: m10p-canary-ingress-canary
+  annotations:
+    nginx.ingress.kubernetes.io/canary: "true"
+    nginx.ingress.kubernetes.io/canary-weight: "100"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: canarydep.jakirdev.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: m10p-canary-service-latest
+            port:
+              number: 80

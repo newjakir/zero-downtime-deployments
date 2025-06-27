@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: m10p-rolling
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: m10p-rolling
+  template:
+    metadata:
+      labels:
+        app: m10p-rolling
+    spec:
+      containers:
+      - name: m10p-rolling
+        image: newjakir/m10p-bluegreen-app:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: m10p-rolling-service
+spec:
+  selector:
+    app: m10p-rolling
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+
+---
+# Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: m10p-rolling
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: rollingdep.jakirdev.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: m10p-rolling-service
+            port:
+              number: 80

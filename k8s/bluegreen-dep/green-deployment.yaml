@@ -1,0 +1,23 @@
+
+# Green deployment (new version to test)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: m10p-green
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: m10p-bluegreen
+      env: green
+  template:
+    metadata:
+      labels:
+        app: m10p-bluegreen
+        env: green
+    spec:
+      containers:
+      - name: m10p-bluegreen
+        image: newjakir/m10p-bluegreen-app:v2.0
+        ports:
+        - containerPort: 3000

@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: m10p-bg-ingress
+  namespace: jakir007
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: chat-app.jakirdev.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: m10app-bluegreen-service  # ✅ corrected name
+                port:
+                  number: 80                    # ✅ matches Service's port

@@ -1,0 +1,22 @@
+# Blue deployment (current stable)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: m10p-blue
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: m10p-bluegreen
+      env: blue
+  template:
+    metadata:
+      labels:
+        app: m10p-bluegreen
+        env: blue
+    spec:
+      containers:
+      - name: m10p-bluegreen
+        image: newjakir/m10p-bluegreen-app:v1.0
+        ports:
+        - containerPort: 3000
