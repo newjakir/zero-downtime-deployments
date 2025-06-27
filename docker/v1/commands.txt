@@ -1,0 +1,27 @@
+#Build docker Image
+docker build -t m10p-bluegreen-app:latest .
+
+#Build with platform
+docker buildx build --platform linux/amd64 -t m10p-bluegreen-app:latest --load .
+
+
+#Run docker container
+docker run -p 3000:3000 m10p-bluegreen-app:latest
+
+#Run with name and tag
+docker run -d --name m10p-bluegreen-app-container -p 3000:3000 m10p-bluegreen-app:latest
+
+#With platform
+docker run --name m10p-bluegreen-app-container --platform linux/amd64 -p 3000:3000 m10p-bluegreen-app:latest
+
+###Docker Push
+#1. Login
+docker login
+
+#2.Tag
+docker tag m10p-bluegreen-app:latest newjakir/m10p-bluegreen-app:latest
+
+#3. Push
+docker push newjakir/m10p-bluegreen-app:latest
+
+
